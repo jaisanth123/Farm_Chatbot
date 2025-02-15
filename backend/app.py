@@ -44,20 +44,79 @@ db = client["farmers_db"]
 # Define available endpoints and their operations
 ENDPOINTS = {
     "GET": {
-        "/sellers": ["List sellers", "Get seller details"],
-        "/products": ["List products", "Get product details"],
-        "/customers": ["List customers", "Get customer details"],
-        "/reviews": ["List reviews", "Get product reviews"],
-        "/orders": ["List orders", "Get order details"],  # Ensure orders are included in endpoints
+        "/sellers": [
+            "List all sellers",
+            "Get details of a specific seller by ID",
+            "Search sellers by name",
+            "Get top-rated sellers",
+            "Filter sellers by location"
+        ],
+        "/products": [
+            "List all products",
+            "Get details of a specific product by ID",
+            "Search products by name",
+            "Filter products by category",
+            "Get best-selling products",
+            "Get products by price range"
+        ],
+        "/customers": [
+            "List all customers",
+            "Get details of a specific customer by ID",
+            "Search customers by name",
+            "Get customers by order history",
+            "Filter customers by location"
+        ],
+        "/reviews": [
+            "List all reviews",
+            "Get reviews for a specific product",
+            "Get reviews by a specific customer",
+            "Filter reviews by rating",
+            "Get most helpful reviews"
+        ],
+        "/orders": [
+            "List all orders",
+            "Get details of a specific order by ID",
+            "Filter orders by status (pending, shipped, delivered)",
+            "Get orders by a specific customer",
+            "Get recent orders",
+            "Get orders within a date range"
+        ],
     },
     "POST": {
-        "/sellers": ["Create new seller"],
-        "/products": ["Create new product"],
-        "/customers": ["Create new customer"],
-        "/reviews": ["Create new review"],
-        "/orders": ["Create new order"],
+        "/sellers": [
+            "Create a new seller",
+            "Add seller contact details",
+            "Register a seller with business details",
+            "Verify a seller account"
+        ],
+        "/products": [
+            "Create a new product",
+            "Add product ",
+            "Add a product to a seller",
+            "Update product stock",
+            "Assign product to a seller"
+        ],
+        "/customers": [
+            "Create a new customer",
+            "Register a customer account",
+            "Add customer shipping address",
+            "Update customer preferences"
+        ],
+        "/reviews": [
+            "Create a new review",
+            "Submit a review with ratings",
+            "Report a review",
+            "Reply to a review"
+        ],
+        "/orders": [
+            "Create a new order",
+            "Add items to an order",
+            "Cancel an order",
+            "Confirm an order payment"
+        ]
     }
 }
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173","http://localhost:5174"],
