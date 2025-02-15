@@ -60,7 +60,7 @@ ENDPOINTS = {
 }
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173","http://localhost:5174"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -126,16 +126,27 @@ def detect_operation(user_input):
     except Exception as e:
         logging.error(f"Error in detect_operation: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Operation detection failed: {str(e)}")
+from pydantic import BaseModel
+
 class UserData(BaseModel):
     userId: str
     name: str
-    userType: str  # Can be 'consumer' or 'farmer'
+    email: str
+    password: str
+    phoneNumber: str
+    address: str
+    userType: str
 
+@app.get("/")
+#get route for the home page
+async def read_root():
+    return {"message": "Welcome to the Farmers API!"}
 @app.post("/api/users")
 async def create_user(user_data: UserData):
     try:
         # Add timestamp
         user_data_dict = user_data.dict()
+        print(user_data_dict)
         user_data_dict["createdAt"] = datetime.utcnow()
         user_data_dict["updatedAt"] = datetime.utcnow()
 
@@ -351,7 +362,8 @@ async def process_request(request: Request):
     try:
         data = await request.json()
         user_input = data.get("input", "")
-        logging.info(f"Received user input: {user_input}")
+        user_id = data.get("userId", "")  # Get userId from the request data
+        logging.info(f"Received user input: {user_input} from user: {user_id}")
         
         # Check if it's a product creation request
         if any(word in user_input.lower() for word in ["create", "add", "new"]) and "product" in user_input.lower():
@@ -409,7 +421,8 @@ async def process_request(request: Request):
                     "category": extracted_data.get("category", "NaN"),
                     "quantity": int(extracted_data.get("quantity", 0)),
                     "harvestDate": extracted_data.get("harvestDate", current_date),
-                    "location": extracted_data.get("location", "NaN")
+                    "location": extracted_data.get("location", "NaN"),
+                    "sellerId":user_id
                 }
                 
                 logging.info(f"Processed product data: {product_data}")
