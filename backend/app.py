@@ -126,7 +126,29 @@ def detect_operation(user_input):
     except Exception as e:
         logging.error(f"Error in detect_operation: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Operation detection failed: {str(e)}")
+class UserData(BaseModel):
+    userId: str
+    name: str
+    userType: str  # Can be 'consumer' or 'farmer'
 
+@app.post("/api/users")
+async def create_user(user_data: UserData):
+    try:
+        # Add timestamp
+        user_data_dict = user_data.dict()
+        user_data_dict["createdAt"] = datetime.utcnow()
+        user_data_dict["updatedAt"] = datetime.utcnow()
+
+        # Insert user data into MongoDB
+        result = db.users.insert_one(user_data_dict)
+
+        if result.inserted_id:
+            return {"message": "User data submitted successfully!", "userId": str(result.inserted_id)}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to insert user data into the database")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 # GET endpoint for orders
 @app.get("/orders")
 async def get_orders(status: Optional[str] = None, page: int = 1, limit: int = 10):
